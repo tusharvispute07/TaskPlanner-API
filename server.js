@@ -13,7 +13,7 @@ const port = process.env.PORT || 4000
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 const corsOptions = {
-    origin: "*",
+    origin:  ['https://taskplanner-app.onrender.com', 'http://localhost:3000'],
     credentials: true,
     optionsSuccessStatus: 200 
 } 
