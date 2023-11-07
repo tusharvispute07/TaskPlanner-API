@@ -62,6 +62,7 @@ router.post('/api/register', async (req, res) => {
 
 router.post('/api/login', async (req, res)=>{
     const {username, password} = req.body
+    console.log(username, password)
     const user = await Users.findOne({username})
 
     if(!user) return res.status(401).json({message: "Invalid Credentials"})
@@ -69,6 +70,7 @@ router.post('/api/login', async (req, res)=>{
     if (!passwordMatch) return res.status(401).json({message:"invalid Credentials"})
    
     const token = jwt.sign({userId: user._id.toString()}, process.env.SECRET_KEY)
+    console.log("auth token", token)
     res.cookie('authToken', token)
     res.status(200).json({message:"login successful"})
 })
