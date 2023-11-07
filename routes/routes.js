@@ -71,14 +71,9 @@ router.post('/api/login', async (req, res)=>{
    
     const token = jwt.sign({userId: user._id.toString()}, process.env.SECRET_KEY)
     console.log("auth token", token)
-    res.cookie('authToken', token)
+    res.cookie('authToken', token, { domain: '.onrender.com', secure: true})
     res.status(200).json({message:"login successful"})
 })
-
-router.post('/testcookie', (req, res) => {
-    res.cookie('testCookie', 'testValue', {httpOnly:false});
-    res.send('Cookie set');
-  });
 
 router.post('/api/add', authenticateCookie, async (req, res)=>{
     const newItem = new Items({name:req.body.name, createdBy:req.user._id})
