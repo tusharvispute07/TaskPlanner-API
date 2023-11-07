@@ -71,7 +71,7 @@ router.post('/api/login', async (req, res)=>{
    
     const token = jwt.sign({userId: user._id.toString()}, process.env.SECRET_KEY)
     console.log("auth token", token)
-    res.cookie('authToken', token, { domain: '.onrender.com', secure: true, httpOnly:false})
+    res.cookie('authToken', token, { domain: 'taskplanner-makp.onrender.com', secure: true, httpOnly:false})
     res.status(200).json({message:"login successful"})
 })
 
