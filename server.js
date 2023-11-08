@@ -4,7 +4,7 @@ import cors from "cors"
 import router from "./routes/routes.js"
 import mongoose from "mongoose";
 import dotenv from "dotenv"
-import cookieParser from "cookie-parser";
+
 
 dotenv.config()
 const app = express()
@@ -23,7 +23,7 @@ mongoose.connect(process.env.DB_URI,{useNewUrlParser:true})
 .catch(err => console.log(err))
 
 app.use(cors(corsOptions))
-app.use(cookieParser())
+
 
 app.use('/',router)
 

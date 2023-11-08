@@ -5,11 +5,11 @@ import {Users, Items} from "../models/schemas.js";
 import jwt from 'jsonwebtoken'
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt'
-import authenticateCookie from "../middleware/auth.js";
+import authenticateJWT from "../middleware/auth.js";
 
 const router = express.Router()
 
-router.get('/api', authenticateCookie, async (req, res)=>{
+router.get('/api', authenticateJWT, async (req, res)=>{
     const items = await Items.find({createdBy: req.user._id})
     if (items){
         res.json({items:items, user:req.user})
@@ -62,7 +62,6 @@ router.post('/api/register', async (req, res) => {
 
 router.post('/api/login', async (req, res)=>{
     const {username, password} = req.body
-    console.log(username, password)
     const user = await Users.findOne({username})
 
     if(!user) return res.status(401).json({message: "Invalid Credentials"})
@@ -70,12 +69,10 @@ router.post('/api/login', async (req, res)=>{
     if (!passwordMatch) return res.status(401).json({message:"invalid Credentials"})
    
     const token = jwt.sign({userId: user._id.toString()}, process.env.SECRET_KEY)
-    console.log("auth token", token)
-    res.cookie('authToken', token, { domain: 'taskplanner-makp.onrender.com', secure: true, httpOnly:false})
-    res.status(200).json({message:"login successful"})
+    res.status(200).json({ message: "Login successful", token: token })
 })
 
-router.post('/api/add', authenticateCookie, async (req, res)=>{
+router.post('/api/add', authenticateJWT, async (req, res)=>{
     const newItem = new Items({name:req.body.name, createdBy:req.user._id})
     const savedItem = await newItem.save()
     if (savedItem){
@@ -85,7 +82,7 @@ router.post('/api/add', authenticateCookie, async (req, res)=>{
     }
 })
 
-router.delete('/api/delete/:id', authenticateCookie, async (req, res)=>{
+router.delete('/api/delete/:id', authenticateJWT, async (req, res)=>{
     const itemId = new mongoose.Types.ObjectId(req.params.id)
     const userId = req.user._id
     const items = await Items.findOneAndDelete({_id:itemId, createdBy:userId}).exec()
